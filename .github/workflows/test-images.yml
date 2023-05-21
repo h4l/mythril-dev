@@ -1,0 +1,49 @@
+name: "Build the Mythril Container Images for linux/amd64 and linux/arm64"
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "docker/*"
+
+env:
+  REGISTRY: ghcr.io
+  TAG_PREFIX: ghcr.io/${{ github.repository }}
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm64
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Extract Locked Dependency Version Variables
+        uses: docker/bake-action@v3
+        with:
+          workdir: ./docker
+          files: docker-bake.hcl
+          targets: locked-versions
+          set: |
+            *.cache-from=type=gha
+            *.cache-to=type=gha,mode=max
+
+      - name: Build & Test
+        uses: docker/bake-action@v3
+        with:
+          workdir: ./docker
+          files: docker-bake.hcl,locked-versions/docker-bake.versions.json
+          provenance: true
+          sbom: true
+          push: false
+          set: |
+            *.cache-from=type=gha
+            *.cache-to=type=gha,mode=max
