@@ -1,0 +1,7 @@
+.*
+!.dockerignore
+!.editorconfig
+!.git*
+!.prettierrc.yml
+docker/locked-versions
+build
