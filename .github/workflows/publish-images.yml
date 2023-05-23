@@ -67,13 +67,16 @@ jobs:
         run: |
           set -xeuo pipefail
           # Use a loop rather than xargs so that -x can show what's happening
-          readarray -t image_digests <<<$(
-            jq <<<$BAKE_META -r '
+          readarray -t image_digests <<<"$(
+            jq <<<"$BAKE_META" -r '
               .[]
               | select(.["image.name"]? and .["containerimage.digest"]?)
-              | "\(.["image.name"])@\(.["containerimage.digest"])"
+              # Each target can have multiple tags pointing to the same digest. We only
+              # need to sign the digest once, not for each tag.
+              | (.["image.name"] | split(",") | first | split(":") | first) as $name
+              | "\($name)@\(.["containerimage.digest"])"
             '
-          )
+          )"
           for image_digest in "${image_digests[@]}"; do
             cosign sign --yes --recursive "${image_digest:?}"
           done
