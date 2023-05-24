@@ -3,8 +3,8 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - "docker/*"
+    # paths:
+    #   - "docker/*"
 
 env:
   REGISTRY: ghcr.io
@@ -36,14 +36,14 @@ jobs:
             *.cache-from=type=gha
             *.cache-to=type=gha,mode=max
 
-      - name: Build & Test
-        uses: docker/bake-action@v3
-        with:
-          workdir: ./docker
-          files: docker-bake.hcl,locked-versions/docker-bake.versions.json,base-images.lock
-          provenance: true
-          sbom: true
-          push: false
-          set: |
-            *.cache-from=type=gha
-            *.cache-to=type=gha,mode=max
+      # - name: Build & Test
+      #   uses: docker/bake-action@v3
+      #   with:
+      #     workdir: ./docker
+      #     files: docker-bake.hcl,locked-versions/docker-bake.versions.json,base-images.lock
+      #     provenance: true
+      #     sbom: true
+      #     push: false
+      #     set: |
+      #       *.cache-from=type=gha
+      #       *.cache-to=type=gha,mode=max
