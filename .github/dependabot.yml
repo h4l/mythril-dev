@@ -5,3 +5,11 @@ updates:
     schedule:
       interval: "daily"
     versioning-strategy: lockfile-only
+    # only security updates
+    open-pull-requests-limit: 0
+  - package-ecosystem: "docker"
+    directory: "/docker"
+    schedule:
+      interval: "daily"
+    # only security updates
+    open-pull-requests-limit: 0
