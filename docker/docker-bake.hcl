@@ -14,6 +14,14 @@ variable "INSTALLED_SOLC_VERSIONS" {
   default = "0.8.20"
 }
 
+variable "BASE_IMAGE_PYTHON" {
+  default = "python:3.9-slim"
+}
+
+variable "BASE_IMAGE_DEBIAN" {
+  default = "debian:bullseye"
+}
+
 variable "CI" {
   default = false
 }
@@ -97,6 +105,10 @@ target "_base" {
   contexts = {
     mythril-src = "https://github.com/ConsenSys/mythril.git#v${MYTHRIL_VERSION}"
     blake2b-src = "https://github.com/ethereum/blake2b-py.git#v${BLAKE2B_VERSION}"
+  }
+  args = {
+    BASE_IMAGE_DEBIAN = BASE_IMAGE_DEBIAN
+    BASE_IMAGE_PYTHON = BASE_IMAGE_PYTHON
   }
   platforms = [
     "linux/amd64",
