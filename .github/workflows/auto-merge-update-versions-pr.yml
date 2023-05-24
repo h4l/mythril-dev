@@ -1,7 +1,7 @@
 name: "Auto-merge Update Versions Pull Request"
 on:
   check_run:
-    types: [completed]
+  check_suite:
 
 jobs:
   merge-successful-version-update-pr:
