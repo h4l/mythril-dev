@@ -3,6 +3,21 @@ on:
   check_run:
   check_suite:
 
+permissions:
+  actions: write
+  checks: write
+  contents: write
+  deployments: write
+  id-token: write
+  issues: write
+  discussions: write
+  packages: write
+  pages: write
+  pull-requests: write
+  repository-projects: write
+  security-events: write
+  statuses: write
+
 jobs:
   merge-successful-version-update-pr:
     name: Auto-merge Update Versions Pull Request
@@ -12,6 +27,6 @@ jobs:
     steps:
       - name: Check PR Status
         env:
-          CHECK_RUN: ${{ github.event.check_run }}
+          EVENT: ${{ toJson(github.event) }}
         run: |
-          jq <<<"${CHECK_RUN:?}"
+          jq <<<"${EVENT:?}"
