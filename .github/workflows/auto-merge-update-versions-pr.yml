@@ -12,6 +12,6 @@ jobs:
     steps:
       - name: Check PR Status
         env:
-          CHECK_RUN: github.event.check_run
+          CHECK_RUN: ${{ github.event.check_run }}
         run: |
           jq <<<"${CHECK_RUN:?}"
