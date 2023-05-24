@@ -1,0 +1,5 @@
+*
+!lock_base_images.py
+!poetry.lock
+!pyproject.toml
+!base-images.json

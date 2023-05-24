@@ -1,0 +1,10 @@
+{
+  "BASE_IMAGE_PYTHON": {
+    "registry": "docker.io/library/python",
+    "tagRegex": "^3\\.9\\.(\\d+)-slim$"
+  },
+  "BASE_IMAGE_DEBIAN": {
+    "registry": "docker.io/library/debian",
+    "tagRegex": "^bullseye-(\\d{8})$"
+  }
+}
