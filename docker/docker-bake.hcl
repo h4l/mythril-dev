@@ -14,6 +14,14 @@ variable "INSTALLED_SOLC_VERSIONS" {
   default = "0.8.20"
 }
 
+variable "BASE_IMAGE_PYTHON" {
+  default = "python:3.9-slim"
+}
+
+variable "BASE_IMAGE_DEBIAN" {
+  default = "debian:bullseye"
+}
+
 variable "CI" {
   default = false
 }
@@ -84,16 +92,25 @@ function "labels" {
   )
 }
 
+target "_base" {
+  args = {
+    BASE_IMAGE_DEBIAN = BASE_IMAGE_DEBIAN
+    BASE_IMAGE_PYTHON = BASE_IMAGE_PYTHON
+  }
+}
+
 group "default" {
   targets = ["myth", "myth-smoke-test"]
 }
 
 target "locked-versions" {
+  inherits = ["_base"]
   target = "locked-versions"
   output = ["type=local,dest=locked-versions"]
 }
 
-target "_base" {
+target "_myth_base" {
+  inherits = ["_base"]
   contexts = {
     mythril-src = "https://github.com/ConsenSys/mythril.git#v${MYTHRIL_VERSION}"
     blake2b-src = "https://github.com/ethereum/blake2b-py.git#v${BLAKE2B_VERSION}"
@@ -106,7 +123,7 @@ target "_base" {
 }
 
 target "myth" {
-  inherits = ["_base"]
+  inherits = ["_myth_base"]
   target = "myth"
   args = {
     INSTALLED_SOLC_VERSIONS = INSTALLED_SOLC_VERSIONS
