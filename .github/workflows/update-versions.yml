@@ -8,9 +8,6 @@ jobs:
   update-dependencies:
     name: Update Dependencies & PR if Changed
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
 
     steps:
       - name: Checkout
@@ -43,6 +40,14 @@ jobs:
             echo "dependencies_changed=false" >> "$GITHUB_ENV"
           fi
 
+      - name: Get Auth Token
+        uses: tibdex/github-app-token@b62528385c34dbc9f38e5f4225ac829252d1ea92
+        if: env.dependencies_changed == 'true'
+        id: generate-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Create Pull Request for Dependency Changes
         uses: peter-evans/create-pull-request@v5
         if: env.dependencies_changed == 'true'
@@ -52,3 +57,4 @@ jobs:
           branch: auto-update-dependencies
           labels: "dependency-update,automated"
           body:
+          token: ${{ steps.generate-token.outputs.token }}
