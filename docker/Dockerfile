@@ -1,4 +1,6 @@
 # syntax=docker/dockerfile:1
+ARG BASE_IMAGE_DEBIAN
+ARG BASE_IMAGE_PYTHON
 
 # Here we extract dependency version numbers from the Poetry lockfile. We use
 # the number of mythril to determine the tag of the main image. And we use the
@@ -27,11 +29,11 @@ COPY --from=generate-locked-versions \
 
 # The Python version needs to be the version of Python used in the Debian
 # version, otherwise the built wheels won't be compatible.
-FROM python:3.9-slim AS python-slim
+FROM ${BASE_IMAGE_PYTHON:?} AS python-slim
 
 # Because we're cross-compiling, we always want to be running the native arch of
 # the builder for everything except the final output stages.
-FROM --platform=${BUILDARCH} debian:bullseye as base
+FROM --platform=${BUILDARCH} ${BASE_IMAGE_DEBIAN:?} as base
 ARG BUILDARCH TARGETARCH
 
 # Define envars for the alternative arch names some programs use
