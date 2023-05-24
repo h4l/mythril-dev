@@ -1,5 +1,6 @@
 name: "Auto-merge Update Versions Pull Request"
 on:
+  status:
   check_run:
     types:
       - completed
