@@ -1,7 +1,14 @@
 name: "Auto-merge Update Versions Pull Request"
 on:
   check_run:
+    types:
+      - completed
+      - created
+      - requested_action
+      - rerequested
   check_suite:
+    types:
+      - completed
 
 permissions:
   actions: write
