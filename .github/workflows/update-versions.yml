@@ -1,31 +1,60 @@
-name: "Auto-merge Dependabot PR"
+name: "Update Mythril and Dependency Versions"
 on:
-  pull_request_target:
-    types: [opened, reopened]
+  workflow_dispatch:
+  schedule: # daily
+    - cron: 39 2 * * *
 
 jobs:
   update-dependencies:
     name: Update Dependencies & PR if Changed
     runs-on: ubuntu-latest
-    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' && (github.actor == 'dependabot[bot]' || github.actor == github.repository_owner) }}
-    permissions:
-      contents: write
-      pull-requests: write
 
     steps:
-      - uses: tibdex/github-app-token@b62528385c34dbc9f38e5f4225ac829252d1ea92
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Lock Dependencies at Latest Versions
+        uses: docker/bake-action@v3
+        with:
+          workdir: ./docker
+          files: dependencies.hcl
+          targets: lock-dependencies
+          set: |
+            *.cache-from=type=gha
+            *.cache-to=type=gha,mode=max
+
+      - name: Commit Changes to Locked Dependencies
+        run: |
+          cp docker/locked-versions/{poetry.lock,base-images.lock} docker/
+
+          if [[ $(git status --porcelain) != "" ]]; then
+            echo "Dependencies Changed:"
+            git diff --stat
+            git diff
+            echo "dependencies_changed=true" >> "$GITHUB_ENV"
+          else
+            echo "No Dependencies Changed"
+            echo "dependencies_changed=false" >> "$GITHUB_ENV"
+          fi
+
+      - name: Get Auth Token
+        uses: tibdex/github-app-token@b62528385c34dbc9f38e5f4225ac829252d1ea92
+        if: env.dependencies_changed == 'true'
         id: generate-token
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Auto-merge Dependabot PR
-        if: |
-          startswith(github.event.pull_request.title, 'build(deps): bump')
-        run: gh pr merge --auto --merge "${PULL_REQUEST:?}"
-        env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-          PULL_REQUEST: ${{ github.event.pull_request.html_url }}
+      - name: Create Pull Request for Dependency Changes
+        uses: peter-evans/create-pull-request@v5
+        if: env.dependencies_changed == 'true'
+        with:
+          commit-message: "build(deps): auto-update dependencies"
+          title: 🤖 Update Dependencies
+          branch: auto-update-dependencies
+          labels: "dependency-update,automated"
+          body:
+          token: ${{ steps.generate-token.outputs.token }}
