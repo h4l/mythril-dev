@@ -7,7 +7,7 @@ jobs:
   merge-successful-version-update-pr:
     name: Auto-merge Update Versions Pull Request
     runs-on: ubuntu-latest
-    if: github.event.check_run.conclusion == 'success'
+    # if: github.event.check_run.conclusion == 'success'
 
     steps:
       - name: Check PR Status
