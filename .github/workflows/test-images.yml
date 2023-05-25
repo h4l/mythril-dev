@@ -37,13 +37,16 @@ jobs:
             *.cache-to=type=gha,mode=max
 
       - name: Build & Test
-        uses: docker/bake-action@v3
-        with:
-          workdir: ./docker
-          files: docker-bake.hcl,locked-versions/docker-bake.versions.json,base-images.lock
-          provenance: true
-          sbom: true
-          push: false
-          set: |
-            *.cache-from=type=gha
-            *.cache-to=type=gha,mode=max
+        run: sleep 30
+
+      # - name: Build & Test
+      #   uses: docker/bake-action@v3
+      #   with:
+      #     workdir: ./docker
+      #     files: docker-bake.hcl,locked-versions/docker-bake.versions.json,base-images.lock
+      #     provenance: true
+      #     sbom: true
+      #     push: false
+      #     set: |
+      #       *.cache-from=type=gha
+      #       *.cache-to=type=gha,mode=max
