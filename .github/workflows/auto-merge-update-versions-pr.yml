@@ -1,6 +1,8 @@
 name: "Auto-merge Update Versions Pull Request"
 on:
   workflow_run:
+    workflows:
+      - "Build & Test"
     types:
       - completed
 

@@ -1,4 +1,4 @@
-name: "Build the Mythril Container Images for linux/amd64 and linux/arm64"
+name: "Build & Test"
 on:
   pull_request:
     branches:
