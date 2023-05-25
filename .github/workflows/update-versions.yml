@@ -49,6 +49,7 @@ jobs:
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Create Pull Request for Dependency Changes
+        id: create-pr
         uses: peter-evans/create-pull-request@v5
         if: env.dependencies_changed == 'true'
         with:
@@ -58,3 +59,10 @@ jobs:
           labels: "dependency-update,automated"
           body:
           token: ${{ steps.generate-token.outputs.token }}
+
+      - name: Enable Auto-Merge
+        if: env.dependencies_changed == 'true'
+        run: gh pr merge --merge --auto "${PR:?}"
+        env:
+          PR: ${{ steps.create-pr.outputs.pull-request-number}}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
