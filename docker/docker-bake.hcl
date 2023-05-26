@@ -92,6 +92,12 @@ function "labels" {
   )
 }
 
+function "image_index_annotations" {
+  params = []
+  // https://github.com/moby/buildkit/blob/master/docs/annotations.md
+  result = formatlist("annotation-index.%s=%s", keys(labels()), values(labels()))
+}
+
 target "_base" {
   args = {
     BASE_IMAGE_DEBIAN = BASE_IMAGE_DEBIAN
@@ -129,6 +135,7 @@ target "myth" {
     INSTALLED_SOLC_VERSIONS = INSTALLED_SOLC_VERSIONS
   }
   tags = tags("myth")
+  output = [join(",", flatten([["type=image"], image_index_annotations()]))]
 }
 
 target "myth-smoke-test" {
