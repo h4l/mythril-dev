@@ -54,7 +54,7 @@ It can contain whitespace-separated solc versions:
 
 ```
 $ docker container run --rm --env "SOLC_VERSION=0.7.6 0.8.15" \
-  ghcr.io/h4l/mythril-dev/myth:0.23.22 ...
+  ghcr.io/h4l/mythril/myth ...
 ```
 
 Solc binaries are installed via [svm](https://github.com/ethers-rs/svm-rs) on
@@ -63,7 +63,7 @@ startup. To avoid re-downloading them, you can mount a volume at
 
 ```console
 $ docker container run --rm -v solc:/home/mythril/.svm \
-  ghcr.io/h4l/mythril-dev/myth:0.23.22 svm list
+  ghcr.io/h4l/mythril/myth svm list
 0.7.6 (current)
 
 Installed Versions
@@ -80,17 +80,17 @@ that an image was built by a GitHub Actions CI run from this repository:
 
 ```console
 $ docker container run --rm gcr.io/projectsigstore/cosign \
-  verify ghcr.io/h4l/mythril-dev/myth@sha256:fe7c14c84f641726c525ca0a5ec8e47237a102117444672843024cea07873dce \
+  verify ghcr.io/h4l/mythril/myth@sha256:9a2f8c8ec45cc496f54333506977a8155b6bc28c83ea028aa5b893bf4714a07a \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com \
-  --certificate-identity 'https://github.com/h4l/mythril-dev/.github/workflows/publish-images.yml@refs/heads/main'
+  --certificate-identity 'https://github.com/h4l/mythril/.github/workflows/publish-images.yml@refs/heads/main'
 
-Verification for ghcr.io/h4l/mythril-dev/myth@sha256:fe7c14c84f641726c525ca0a5ec8e47237a102117444672843024cea07873dce --
+Verification for ghcr.io/h4l/mythril/myth@sha256:9a2f8c8ec45cc496f54333506977a8155b6bc28c83ea028aa5b893bf4714a07a --
 The following checks were performed on each of these signatures:
   - The cosign claims were validated
   - Existence of the claims in the transparency log was verified offline
   - The code-signing certificate was verified using trusted certificate authority certificates
 
-[{"critical":{"identity":{"docker-reference":"ghcr.io/h4l/mythril-dev/myth"},"image":{"docker-manifest-digest":"sha256:fe7c14c84f641726c525ca0a5ec8e47237a102117444672843024cea07873dce"},"type":...
+[{"critical":{"identity":{"docker-reference":"ghcr.io/h4l/mythril/myth"},"image":{"docker-manifest-digest":"sha256:9a2f8c8ec45cc496f54333506977a8155b6bc28c83ea028aa5b893bf4714a07a"},"type": ...
 ```
 
 See [Verify the content of an image](#verify-the-content-of-an-image) for more.
@@ -100,37 +100,36 @@ See [Verify the content of an image](#verify-the-content-of-an-image) for more.
 Discover images using
 [`crane ls`](https://github.com/google/go-containerregistry/tree/main/cmd/crane),
 or browse the
-[repo's registry page](https://githubb.com/h4l/mythril-dev/pkgs/container/mythril-dev%2Fmyth):
+[repo's registry page](https://githubb.com/h4l/mythril/pkgs/container/mythril-dev%2Fmyth):
 
 ```console
 $ docker run --rm gcr.io/go-containerregistry/crane \
-  ls --full-ref ghcr.io/h4l/mythril-dev/myth | grep -P ':\d+\.\d+\.\d+$'
-ghcr.io/h4l/mythril-dev/myth:0.23.20
-ghcr.io/h4l/mythril-dev/myth:0.23.22
+  ls --full-ref ghcr.io/h4l/mythril/myth | grep -P ':\d+\.\d+\.\d+$'
+ghcr.io/h4l/mythril/myth:0.23.22
 ```
 
 ## Get the sha256 digest of a tag
 
 ```console
 $ docker run --rm gcr.io/go-containerregistry/crane \
-  digest ghcr.io/h4l/mythril-dev/myth:0.23.22
-sha256:fe7c14c84f641726c525ca0a5ec8e47237a102117444672843024cea07873dce
+  digest ghcr.io/h4l/mythril/myth:0.23.22
+sha256:9a2f8c8ec45cc496f54333506977a8155b6bc28c83ea028aa5b893bf4714a07a
 ```
 
 ## Pin an exact image version as a short tag
 
 ```console
-$ docker image pull ghcr.io/h4l/mythril-dev/myth:0.23
+$ docker image pull ghcr.io/h4l/mythril/myth@sha256:9a2f8c8ec45cc496f54333506977a8155b6bc28c83ea028aa5b893bf4714a07a
 ...
 
-$ docker image tag ghcr.io/h4l/mythril-dev/myth:0.23.22@sha256:fe7c14c84f641726c525ca0a5ec8e47237a102117444672843024cea07873dce myth
+$ docker image tag ghcr.io/h4l/mythril/myth@sha256:9a2f8c8ec45cc496f54333506977a8155b6bc28c83ea028aa5b893bf4714a07a myth
 ```
 
 Check the tagged image version:
 
 ```console
 $ docker image inspect myth --format '{{ .RepoDigests }}'
-[ghcr.io/h4l/mythril-dev/myth@sha256:fe7c14c84f641726c525ca0a5ec8e47237a102117444672843024cea07873dce]
+[ghcr.io/h4l/mythril/myth@sha256:9a2f8c8ec45cc496f54333506977a8155b6bc28c83ea028aa5b893bf4714a07a]
 ```
 
 ## Verify the content of an image
@@ -151,8 +150,8 @@ Resolve the location of the cosign signature in the container registry:
 
 ```console
 $ docker container run --rm gcr.io/projectsigstore/cosign triangulate \
-  ghcr.io/h4l/mythril-dev/myth@sha256:fe7c14c84f641726c525ca0a5ec8e47237a102117444672843024cea07873dce
-ghcr.io/h4l/mythril-dev/myth:sha256-fe7c14c84f641726c525ca0a5ec8e47237a102117444672843024cea07873dce.sig
+  ghcr.io/h4l/mythril/myth@sha256:9a2f8c8ec45cc496f54333506977a8155b6bc28c83ea028aa5b893bf4714a07a
+ghcr.io/h4l/mythril/myth:sha256-9a2f8c8ec45cc496f54333506977a8155b6bc28c83ea028aa5b893bf4714a07a.sig
 ```
 
 Fetch and print the temporary certificate that was issued to the CI job to sign
@@ -161,7 +160,7 @@ the release image. The claims in the certificate are
 
 ```console
 $ docker run --rm gcr.io/go-containerregistry/crane manifest \
-  ghcr.io/h4l/mythril-dev/myth:sha256-fe7c14c84f641726c525ca0a5ec8e47237a102117444672843024cea07873dce.sig \
+  ghcr.io/h4l/mythril/myth:sha256-9a2f8c8ec45cc496f54333506977a8155b6bc28c83ea028aa5b893bf4714a07a.sig \
   | jq -er '.layers[0].annotations["dev.sigstore.cosign/certificate"]' \
   | openssl x509 -noout -text
 ```
@@ -175,22 +174,22 @@ $ docker run --rm gcr.io/go-containerregistry/crane manifest \
         Data:
             Version: 3 (0x2)
             Serial Number:
-                54:87:a8:03:de:0f:1f:f1:97:66:98:2d:be:96:31:0b:7a:1d:cc:52
+                2b:24:68:9f:2e:fe:ab:aa:b0:a0:b4:87:a4:54:61:d7:f2:95:36:57
         Signature Algorithm: ecdsa-with-SHA384
             Issuer: O=sigstore.dev, CN=sigstore-intermediate
             Validity
-                Not Before: May 26 13:46:42 2023 GMT
-                Not After : May 26 13:56:42 2023 GMT
+                Not Before: May 27 13:14:52 2023 GMT
+                Not After : May 27 13:24:52 2023 GMT
             Subject:
             Subject Public Key Info:
                 Public Key Algorithm: id-ecPublicKey
                     Public-Key: (256 bit)
                     pub:
-                        04:59:d6:3a:44:61:38:e3:5a:12:a9:83:f7:26:02:
-                        b3:f1:5d:15:2a:4e:2c:aa:89:03:f9:7f:9a:30:f4:
-                        2e:88:ac:4c:bb:e0:ea:ef:62:7e:28:14:6e:04:35:
-                        7e:8c:a1:d2:c5:ce:bf:87:81:0f:bf:c1:fe:93:1f:
-                        80:f0:ad:e1:51
+                        04:11:92:4a:8b:a6:39:9a:74:bf:24:25:73:67:6a:
+                        a1:9f:92:66:f4:27:85:c7:ca:e1:cd:60:51:b3:e4:
+                        be:8e:d1:c0:3e:01:ea:d1:48:8d:2b:45:97:57:97:
+                        8f:0f:3c:0c:91:84:44:84:98:b2:3c:f3:4e:e7:3d:
+                        a0:f6:f9:dd:29
                     ASN1 OID: prime256v1
                     NIST CURVE: P-256
             X509v3 extensions:
@@ -199,61 +198,61 @@ $ docker run --rm gcr.io/go-containerregistry/crane manifest \
                 X509v3 Extended Key Usage:
                     Code Signing
                 X509v3 Subject Key Identifier:
-                    4F:7C:74:4E:29:2F:40:E0:99:90:05:1B:BA:4D:70:06:D0:2E:1F:9F
+                    C7:11:44:2B:4B:EB:62:89:76:D6:4F:25:6B:CA:11:87:5F:4A:13:B5
                 X509v3 Authority Key Identifier:
                     keyid:DF:D3:E9:CF:56:24:11:96:F9:A8:D8:E9:28:55:A2:C6:2E:18:64:3F
 
                 X509v3 Subject Alternative Name: critical
-                    URI:https://github.com/h4l/mythril-dev/.github/workflows/publish-images.yml@refs/heads/main
+                    URI:https://github.com/h4l/mythril/.github/workflows/publish-images.yml@refs/heads/main
                 1.3.6.1.4.1.57264.1.1:
                     https://token.actions.githubusercontent.com
                 1.3.6.1.4.1.57264.1.2:
                     push
                 1.3.6.1.4.1.57264.1.3:
-                    40e4e7771aada4f7b9c324cd8be3621d0f6ce8b6
+                    e966d5849fd9aa85d9ee77e26ac317b0866595b9
                 1.3.6.1.4.1.57264.1.4:
                     Publish Mythril Container Images for linux/amd64 and linux/arm64
                 1.3.6.1.4.1.57264.1.5:
-                    h4l/mythril-dev
+                    h4l/mythril
                 1.3.6.1.4.1.57264.1.6:
                     refs/heads/main
                 1.3.6.1.4.1.57264.1.8:
                     .+https://token.actions.githubusercontent.com
                 1.3.6.1.4.1.57264.1.9:
-                    .Whttps://github.com/h4l/mythril-dev/.github/workflows/publish-images.yml@refs/heads/main
+                    .Shttps://github.com/h4l/mythril/.github/workflows/publish-images.yml@refs/heads/main
                 1.3.6.1.4.1.57264.1.10:
-                    .(40e4e7771aada4f7b9c324cd8be3621d0f6ce8b6
+                    .(e966d5849fd9aa85d9ee77e26ac317b0866595b9
                 1.3.6.1.4.1.57264.1.11:
     github-hosted   .
                 1.3.6.1.4.1.57264.1.12:
-                    .&quot;https://github.com/h4l/mythril-dev
+                    ..https://github.com/h4l/mythril
                 1.3.6.1.4.1.57264.1.13:
-                    .(40e4e7771aada4f7b9c324cd8be3621d0f6ce8b6
+                    .(e966d5849fd9aa85d9ee77e26ac317b0866595b9
                 1.3.6.1.4.1.57264.1.14:
                     ..refs/heads/main
                 1.3.6.1.4.1.57264.1.15:
-                    ..644238919
+                    ..638850745
                 1.3.6.1.4.1.57264.1.16:
                     ..https://github.com/h4l
                 1.3.6.1.4.1.57264.1.17:
                     ..146503
                 1.3.6.1.4.1.57264.1.18:
-                    .Whttps://github.com/h4l/mythril-dev/.github/workflows/publish-images.yml@refs/heads/main
+                    .Shttps://github.com/h4l/mythril/.github/workflows/publish-images.yml@refs/heads/main
                 1.3.6.1.4.1.57264.1.19:
-                    .(40e4e7771aada4f7b9c324cd8be3621d0f6ce8b6
+                    .(e966d5849fd9aa85d9ee77e26ac317b0866595b9
                 1.3.6.1.4.1.57264.1.20:
                     ..push
                 1.3.6.1.4.1.57264.1.21:
-                    .Ehttps://github.com/h4l/mythril-dev/actions/runs/5091142381/attempts/1
+                    .Ahttps://github.com/h4l/mythril/actions/runs/5098813464/attempts/1
                 1.3.6.1.4.1.11129.2.4.2:
-    .2...._.!.....}Q...?g /.1...y....47Y.vK.....&lt;....r./)......XO.......H0F.!...q..^..\..2um..5.UWj...
+                    .{.y.w..=0j...2c....g7..J^..<....r./)......]X.......H0F.!..<.......7c..`.......=G.!...U'.{.!..b..*.%z....*..:]..I....$...bD3.
         Signature Algorithm: ecdsa-with-SHA384
-            30:64:02:30:5b:17:32:85:29:06:2a:79:86:15:94:89:f1:73:
-            a4:73:7d:42:05:ce:9f:29:84:52:09:19:77:ac:aa:53:98:67:
-            ac:b7:54:17:1a:7b:2a:f6:51:e1:09:cc:fb:3a:b2:94:02:30:
-            41:41:5a:06:23:fc:23:da:c1:7e:69:1b:5c:17:24:bf:27:4d:
-            54:a3:50:91:45:b5:6b:1f:f5:72:3a:4b:f2:05:e1:ea:bd:6e:
-            3e:70:8d:b4:ab:be:e3:e3:26:26:d4:33
+            30:65:02:30:23:a6:1e:41:b7:84:51:7f:25:bc:ce:30:38:75:
+            53:f0:6f:f0:d3:dc:f3:04:97:47:bd:e6:eb:80:e9:96:b9:1c:
+            1a:65:cd:6f:cc:49:5a:1b:97:b6:10:01:3e:a1:86:ee:02:31:
+            00:e2:86:96:09:61:81:a4:e8:96:ae:bf:ce:aa:2d:d6:b0:da:
+            86:20:47:8f:17:7a:6a:5c:50:d9:06:d5:3f:07:cc:d0:67:63:
+            e2:18:79:31:51:0c:b6:2f:0e:f3:dd:6b:bb
 
 </details>
 
@@ -261,22 +260,22 @@ The certificate contains several X509v3
 [fulcio extension attributes](https://github.com/sigstore/fulcio/blob/main/docs/oid-info.md),
 such as:
 
+- `1.3.6.1.4.1.57264.1.10` — Build Signer Digest
+
+  ```
+              1.3.6.1.4.1.57264.1.10:
+                  .(e966d5849fd9aa85d9ee77e26ac317b0866595b9
+  ```
+
 - `1.3.6.1.4.1.57264.1.11` — Runner Environment
   ```
               1.3.6.1.4.1.57264.1.11:
   github-hosted   .
   ```
-- `1.3.6.1.4.1.57264.1.10` — Build Signer Digest
-
-  ```
-              1.3.6.1.4.1.57264.1.10:
-                  .(40e4e7771aada4f7b9c324cd8be3621d0f6ce8b6
-  ```
-
 - `1.3.6.1.4.1.57264.1.21` — Run Invocation URI
   ```
               1.3.6.1.4.1.57264.1.21:
-                  .Ehttps://github.com/h4l/mythril-dev/actions/runs/5091142381/attempts/1
+                  .Ahttps://github.com/h4l/mythril/actions/runs/5098813464/attempts/1
   ```
 
 (The openssl output is formatted strangely because it doesn't know about the
