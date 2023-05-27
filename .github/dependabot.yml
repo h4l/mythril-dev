@@ -13,3 +13,7 @@ updates:
       interval: "daily"
     # only security notifications
     open-pull-requests-limit: 0
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

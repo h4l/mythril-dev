@@ -11,13 +11,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@4b4e9c3e2d4531116a6f8ba8e71fc6e2cb6e6c8c
 
       - name: Lock Dependencies at Latest Versions
-        uses: docker/bake-action@v3
+        uses: docker/bake-action@ad0d2a9712378c502a7d5c590deb0d7a02d2a61d
         with:
           workdir: ./docker
           files: dependencies.hcl
@@ -50,7 +50,7 @@ jobs:
 
       - name: Create Pull Request for Dependency Changes
         id: create-pr
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@284f54f989303d2699d373481a0cfa13ad5a6666
         if: env.dependencies_changed == 'true'
         with:
           commit-message: "build(deps): auto-update dependencies"
