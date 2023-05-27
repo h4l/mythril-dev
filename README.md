@@ -100,7 +100,7 @@ See [Verify the content of an image](#verify-the-content-of-an-image) for more.
 Discover images using
 [`crane ls`](https://github.com/google/go-containerregistry/tree/main/cmd/crane),
 or browse the
-[repo's registry page](https://githubb.com/h4l/mythril/pkgs/container/mythril-dev%2Fmyth):
+[repo's registry page](https://github.com/h4l/mythril/pkgs/container/mythril%2Fmyth):
 
 ```console
 $ docker run --rm gcr.io/go-containerregistry/crane \
